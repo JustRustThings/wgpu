@@ -11,7 +11,7 @@ use std::time::Instant;
 use bytemuck::TransparentWrapper;
 use parking_lot::Mutex;
 use windows::{
-    core::Interface as _,
+    core::{Interface as _, BOOL},
     Win32::{
         Foundation,
         Graphics::{Direct3D12, Dxgi},
@@ -1821,8 +1821,8 @@ impl crate::Device for super::Device {
             DepthBias: bias.constant,
             DepthBiasClamp: bias.clamp,
             SlopeScaledDepthBias: bias.slope_scale,
-            DepthClipEnable: Foundation::BOOL::from(!desc.primitive.unclipped_depth),
-            MultisampleEnable: Foundation::BOOL::from(desc.multisample.count > 1),
+            DepthClipEnable: BOOL::from(!desc.primitive.unclipped_depth),
+            MultisampleEnable: BOOL::from(desc.multisample.count > 1),
             ForcedSampleCount: 0,
             AntialiasedLineEnable: false.into(),
             ConservativeRaster: if desc.primitive.conservative {
@@ -1852,9 +1852,7 @@ impl crate::Device for super::Device {
                 RasterizedStream: 0,
             },
             BlendState: Direct3D12::D3D12_BLEND_DESC {
-                AlphaToCoverageEnable: Foundation::BOOL::from(
-                    desc.multisample.alpha_to_coverage_enabled,
-                ),
+                AlphaToCoverageEnable: BOOL::from(desc.multisample.alpha_to_coverage_enabled),
                 IndependentBlendEnable: true.into(),
                 RenderTarget: conv::map_render_targets(desc.color_targets),
             },
